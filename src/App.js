@@ -3,6 +3,7 @@ import Navigation from './components/navigation/Navigation';
 import Clarifai from 'clarifai';
 import Logo from './components/logo/Logo';
 import ImageLinkForm from './components/imagelinkform/ImageLinkForm';
+import FaceRecognition from './components/facerecognition/FaceRecognition';
 import Rank from './components/rank/Rank';
 import Particles from 'react-particles-js';
 import './App.css';
@@ -43,7 +44,8 @@ class App extends Component {
 
   onButtonSubmit = () => {
     console.log('click');
-    app.models.predict(Clarifai.GENERAL_MODEL, "https://samples.clarifai.com/metro-north.jpg").then(
+    app.models.predict(Clarifai.COLOR_MODEL, "https://image.freepik.com/free-photo/hair-style-street-fashion-beautiful-girl_1139-844.jpg").then(
+      // under Clarifai.COLOR_MODEL was changed from GENERAL_MODEL to COLOR_MODEL
       function(response) {
         console.log(response);
       },
@@ -64,7 +66,7 @@ class App extends Component {
           onInputChange={this.onInputChange}
           onButtonSubmit={this.onButtonSubmit}
         /> {/* passing input as prop */}
-        {/* <FaceRecognition/> */}
+        <FaceRecognition/>
       </div>
     );
   }
