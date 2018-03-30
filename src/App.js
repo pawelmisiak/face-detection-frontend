@@ -47,10 +47,10 @@ class App extends Component {
     this.setState({imageUrl: this.state.input}); // assigning passed url from input
 
     // console.log('click'); //to test if button works in the console
-    app.models.predict(Clarifai.COLOR_MODEL, this.state.input).then(
+    app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.input).then(
       // under Clarifai.COLOR_MODEL was changed from GENERAL_MODEL to COLOR_MODEL
       function(response) {
-        console.log(response);
+        console.log(response.outputs[0].data.regions[0].region_info.bounding_box);
       },
       function(err) {
         // there was an error
