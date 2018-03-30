@@ -36,7 +36,28 @@ class App extends Component {
     this.state = {
       input: '',
       imageUrl: '',
+      box: {},
     }
+  }
+
+  calculateFaceLocation = (data) => {
+    const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
+    const image = document.getElementById('inputImage');
+    const width = Number(image.width); //Number makes sure that the data is numeric
+    const height = Number(image.height);
+    return {
+      //leftCol is a procentage and by multip but width we will get the
+      //length of the column that we are looking for
+      leftCol: clarifaiFace.left_col * width,
+      topRow: clarifaiFace.top_row * height,
+      rightCol: width - (clarifaiFace.right_col * width),
+      bottomRow: height - (clarifaiFace.bottom_row * height),
+    }
+  }
+
+  displayFaceBox = (box) => {
+    console.log(box);
+    this.setState({box: box});
   }
 
   onInputChange = (event) => {
@@ -46,16 +67,13 @@ class App extends Component {
   onButtonSubmit = () => {
     this.setState({imageUrl: this.state.input}); // assigning passed url from input
 
-    // console.log('click'); //to test if button works in the console
-    app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.input).then(
-      // under Clarifai.COLOR_MODEL was changed from GENERAL_MODEL to COLOR_MODEL
-      function(response) {
-        console.log(response.outputs[0].data.regions[0].region_info.bounding_box);
-      },
-      function(err) {
-        // there was an error
-      }
-    );
+    // below clarifai provided us an API that takes url
+    // under Clarifai.COLOR_MODEL was changed from GENERAL_MODEL to COLOR_MODEL
+    app.models
+      .predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
+      // .then(response => this.calculateFaceLocation(response)
+      .then(response => this.displayFaceBox(this.calculateFaceLocation(response)))
+      .catch(err => console.log(err))
   }
 
   render() {
