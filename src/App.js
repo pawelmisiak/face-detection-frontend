@@ -34,17 +34,20 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      input: ''
+      input: '',
+      imageUrl: '',
     }
   }
 
   onInputChange = (event) => {
-    console.log(event.target.value); //to retrive the exact input from keyboard
+    this.setState({input: event.target.value}); //to retrive the exact input from keyboard
   };
 
   onButtonSubmit = () => {
-    console.log('click');
-    app.models.predict(Clarifai.COLOR_MODEL, "https://image.freepik.com/free-photo/hair-style-street-fashion-beautiful-girl_1139-844.jpg").then(
+    this.setState({imageUrl: this.state.input}); // assigning passed url from input
+
+    // console.log('click'); //to test if button works in the console
+    app.models.predict(Clarifai.COLOR_MODEL, this.state.input).then(
       // under Clarifai.COLOR_MODEL was changed from GENERAL_MODEL to COLOR_MODEL
       function(response) {
         console.log(response);
@@ -66,7 +69,7 @@ class App extends Component {
           onInputChange={this.onInputChange}
           onButtonSubmit={this.onButtonSubmit}
         /> {/* passing input as prop */}
-        <FaceRecognition/>
+        <FaceRecognition imageUrl={this.state.imageUrl}/>
       </div>
     );
   }
