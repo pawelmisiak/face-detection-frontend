@@ -11,7 +11,7 @@ import Particles from 'react-particles-js';
 import './App.css';
 
 const app = new Clarifai.App({
- apiKey: 'e2696ffcd20943df814e1fb1a75c4e35'
+  apiKey: 'e2696ffcd20943df814e1fb1a75c4e35',
 });
 
 const particlesOptions = { //options for the dynamic bg
@@ -20,15 +20,15 @@ const particlesOptions = { //options for the dynamic bg
       value: 70,
       density: {
         enable: true,
-        value_area: 800
-      }
-    }
+        value_area: 800,
+      },
+    },
   },
   "shape": {
       "type": "circle",
       "stroke": {
         "width": 0,
-        "color": "#000000"
+        "color": "#000000",
       }}
 }
 
@@ -39,13 +39,13 @@ const initialState = {
   route: 'signin',
   isSignedIn: false,
   user: {
-    id:'',
+    id: '',
     name: '',
     email: '',
     entries: 0,
-    joined: ''
-  }
-}
+    joined: '',
+  },
+};
 
 class App extends Component {
   constructor() {
@@ -55,14 +55,14 @@ class App extends Component {
   }
 
   loadUser = (data) => {
-    this.setState({user: {
+    this.setState({ user: {
       id: data.id,
       name: data.name,
       email: data.email,
       entries: data.entries,
-      joined: data.joined
+      joined: data.joined,
     }})
-  }
+  };
 
   calculateFaceLocation = (data) => {
     const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
@@ -80,28 +80,29 @@ class App extends Component {
   }
 
   displayFaceBox = (box) => {
-    this.setState({box: box});
-  }
+    this.setState({ box: box });
+  };
 
   onInputChange = (event) => {
-    this.setState({input: event.target.value}); //to retrive the exact input from keyboard
+    this.setState({ input: event.target.value }); //to retrive the exact input from keyboard
   };
 
   onButtonSubmit = () => {
-    this.setState({imageUrl: this.state.input}); // assigning passed url from input
+    this.setState({ imageUrl: this.state.input }); // assigning passed url from input
 
     // below clarifai provided us an API that takes url
     // under Clarifai.COLOR_MODEL was changed from GENERAL_MODEL to COLOR_MODEL
     app.models
       .predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
+
       // .then(response => this.calculateFaceLocation(response)
       .then(response => {
         if (response) {
           fetch('http://localhost:3000/image', {
             method: 'put',
-            headers: {'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              id: this.state.user.id
+              id: this.state.user.id,
             })
           })
             .then(response => response.json())
@@ -109,21 +110,21 @@ class App extends Component {
               // this.setState({user: { //this would update the entire user
               //   entries: count
               // }})
-              this.setState(Object.assign(this.state.user, { entries: count}))
+              this.setState(Object.assign(this.state.user, { entries: count }));
             })
         }
-        this.displayFaceBox(this.calculateFaceLocation(response))
+        this.displayFaceBox(this.calculateFaceLocation(response));
       })
-      .catch(err => console.log(err))
+      .catch(err => console.log(err));
   }
 
   onRouteChange = (route) => {
     if (route === 'signout') {
-      this.setState(initialState)
-    } else if (route === 'home'){
-      this.setState({isSignedIn: true})
+      this.setState(initialState);
+    } else if (route === 'home') {
+      this.setState({ isSignedIn: true });
     }
-    this.setState({route: route})
+    this.setState({ route: route });
   }
 
   render() {
