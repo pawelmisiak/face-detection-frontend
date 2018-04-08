@@ -2,17 +2,13 @@ import React, { Component } from 'react';
 import SignIn from './components/signin/SignIn';
 import Navigation from './components/navigation/Navigation';
 import Register from './components/register/Register';
-import Clarifai from 'clarifai';
+
 import Logo from './components/logo/Logo';
 import ImageLinkForm from './components/imagelinkform/ImageLinkForm';
 import FaceRecognition from './components/facerecognition/FaceRecognition';
 import Rank from './components/rank/Rank';
 import Particles from 'react-particles-js';
 import './App.css';
-
-const app = new Clarifai.App({
-  apiKey: 'e2696ffcd20943df814e1fb1a75c4e35',
-});
 
 const particlesOptions = { //options for the dynamic bg
   particles: {
@@ -90,12 +86,18 @@ class App extends Component {
   onButtonSubmit = () => {
     this.setState({ imageUrl: this.state.input }); // assigning passed url from input
 
+    fetch('http://localhost:3000/imageurl', {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        input: this.state.input
+      })
+    })
+    .then(response => response.json())
+    // in backend imageurl contains api for face recognition
+    // it's hidden in backend so the key isn't exposed to the user
     // below clarifai provided us an API that takes url
     // under Clarifai.COLOR_MODEL was changed from GENERAL_MODEL to COLOR_MODEL
-    app.models
-      .predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
-
-      // .then(response => this.calculateFaceLocation(response)
       .then(response => {
         if (response) {
           fetch('http://localhost:3000/image', {
@@ -126,7 +128,7 @@ class App extends Component {
     }
     this.setState({ route: route });
   }
- 
+
   render() {
     return (
       <div className="App">
