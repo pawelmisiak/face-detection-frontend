@@ -86,7 +86,7 @@ class App extends Component {
   onButtonSubmit = () => {
     this.setState({ imageUrl: this.state.input }); // assigning passed url from input
 
-    fetch('http://localhost:3000/imageurl', {
+    fetch('https://warm-inlet-53768.herokuapp.com/imageurl', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -100,7 +100,7 @@ class App extends Component {
     // under Clarifai.COLOR_MODEL was changed from GENERAL_MODEL to COLOR_MODEL
       .then(response => {
         if (response) {
-          fetch('http://localhost:3000/image', {
+          fetch('https://warm-inlet-53768.herokuapp.com/image', {
             method: 'put',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
